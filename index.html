@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Real-time Chat</title>
+  <style>
+    body{
+        background-color: rgb(186, 241, 192);
+    }
+    
+    /* Add border CSS to input tags */
+input[type="text"] {
+ 
+  padding: 5px;
+  margin-bottom: 10px;
+  border: 2px solid rgb(18, 189, 219);
+  border-radius: 20px;
+margin-top: 10%;
+}
+button{
+  border: 2px solid rgb(18, 189, 219);
+  border-radius: 20px;
+  height: 28px;
+  width: 50px;
+}
+    </style>
+</head>
+<body>
+  <ul id="messages"></ul>
+  <form id="chat-form">
+    <input id="username" type="text" placeholder="Username" required>
+    <input id="message" type="text" placeholder="Message" required>
+    <button>Send</button>
+  </form>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.1/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    // Handle form submission
+    document.getElementById('chat-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const username = document.getElementById('username').value;
+      const message = document.getElementById('message').value;
+
+      // Send the chat message to the server
+      socket.emit('chat message', {
+        username: username,
+        message: message,
+      });
+
+      // Clear the input field
+      document.getElementById('message').value = '';
+    });
+
+    // Handle incoming chat messages
+    socket.on('chat message', (msg) => {
+      const item = document.createElement('li');
+      item.textContent = `${msg.username}: ${msg.message}`;
+      document.getElementById('messages').appendChild(item);
+    });
+  </script>
+</body>
+</html>
